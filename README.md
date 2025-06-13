@@ -94,4 +94,4 @@ support@arkhost.com
 
 ## License
 
-Proprietary. Copyright © 2024 ArkHost.
+Proprietary. Copyright © 2025 ArkHost.
