@@ -36,7 +36,7 @@ Configurable options:
 
 ## File Structure
 
-1111
+```
 /modules/servers/ArkhostVPSAG/
 ├── ArkhostVPSAG.php
 ├── callback.php
@@ -49,7 +49,7 @@ Configurable options:
     ├── css/
     ├── js/
     └── img/
-1111
+```
 
 ## API Integration
 
