@@ -1,13 +1,3 @@
-{*
- *	WHMCS Server Module - VPSAG
- *	@package     WHMCS
- *	@copyright   ArkHost 2024
- *	@link        https://arkhost.com
- *	@author      ArkHost <support@arkhost.com>
- *}
-
-
-
 <style>
     .arkhost-vps-container {
         font-family: 'Arial', sans-serif;
@@ -313,6 +303,16 @@
     .arkhost-vps-container .vps-control-btn i {
         margin-right: 6px;
         font-size: 1rem;
+    }
+    
+    /* Mobile Responsive - Stack VPS Control Buttons Vertically */
+    @media (max-width: 767px) {
+        .arkhost-vps-container .vps-control-btn {
+            display: block;
+            width: 100%;
+            margin: 8px 0;
+            text-align: center;
+        }
     }
     
     /* Graph Time Selection Buttons */
@@ -960,6 +960,118 @@
         ArkHostVPS_API('Reinstall', true, params);
         return false;
     }
+    
+    function refreshRAMUsage() {
+        // Add spinning animation to the button
+        var button = event.target.closest('button');
+        var icon = button.querySelector('i');
+        icon.classList.add('fa-spin');
+        
+        // Disable button temporarily
+        button.disabled = true;
+        
+        // Make API call to get fresh server info
+        var productURL = '{$WEB_ROOT}/clientarea.php?action=productdetails&id={$serviceid}';
+        if (typeof jQuery !== 'undefined') {
+            jQuery.get(productURL + '&modop=custom&a=ClientAreaAPI&api=Server Info&token={$token}', function(data) {
+                if (data && data.ram_usage && data.ram) {
+                    // Update RAM usage display
+                    var ramUsageGB = (data.ram_usage / 1024 / 1024 / 1024);
+                    var ramPercent = (ramUsageGB / data.ram) * 100;
+                    
+                    // Update progress bar
+                    var ramBar = document.getElementById('ramPercentBar');
+                    ramBar.style.width = Math.round(ramPercent) + '%';
+                    ramBar.textContent = Math.round(ramPercent) + '%';
+                    
+                    // Update text display
+                    var ramText = document.getElementById('ramPercentVal');
+                    ramText.textContent = ramUsageGB.toFixed(1) + ' / ' + data.ram + ' GB';
+                }
+            }).always(function() {
+                // Re-enable button and stop spinning
+                icon.classList.remove('fa-spin');
+                button.disabled = false;
+            });
+        }
+        return false;
+    }
+    
+    function refreshCPUUsage() {
+        // Add spinning animation to the button
+        var button = event.target.closest('button');
+        var icon = button.querySelector('i');
+        icon.classList.add('fa-spin');
+        
+        // Disable button temporarily
+        button.disabled = true;
+        
+        // Make API call to get fresh server info
+        var productURL = '{$WEB_ROOT}/clientarea.php?action=productdetails&id={$serviceid}';
+        if (typeof jQuery !== 'undefined') {
+            jQuery.get(productURL + '&modop=custom&a=ClientAreaAPI&api=Server Info&token={$token}', function(data) {
+                if (data && typeof data.cpu_usage !== 'undefined') {
+                                         // Update CPU usage display
+                     var cpuPercent;
+                     if (data.cpu_usage <= 1) {
+                         cpuPercent = Math.round(data.cpu_usage * 100);
+                     } else {
+                         cpuPercent = Math.ceil(data.cpu_usage);
+                     }
+                     
+                     // Update progress bar
+                     var cpuBar = document.getElementById('cpuPercentBar');
+                     cpuBar.style.width = cpuPercent + '%';
+                     cpuBar.textContent = cpuPercent + '%';
+                     
+                     // Update text display
+                     var cpuText = document.getElementById('cpuPercentVal');
+                     cpuText.textContent = cpuPercent + '% CPU Usage';
+                }
+            }).always(function() {
+                // Re-enable button and stop spinning
+                icon.classList.remove('fa-spin');
+                button.disabled = false;
+            });
+                 }
+         return false;
+     }
+     
+     function refreshBandwidthUsage() {
+         // Add spinning animation to the button
+         var button = event.target.closest('button');
+         var icon = button.querySelector('i');
+         icon.classList.add('fa-spin');
+         
+         // Disable button temporarily
+         button.disabled = true;
+         
+         // Make API call to get fresh server info
+         var productURL = '{$WEB_ROOT}/clientarea.php?action=productdetails&id={$serviceid}';
+         if (typeof jQuery !== 'undefined') {
+             jQuery.get(productURL + '&modop=custom&a=ClientAreaAPI&api=Server Info&token={$token}', function(data) {
+                 if (data && typeof data.bandwidth_used !== 'undefined' && data.bandwidth) {
+                     // Update bandwidth usage display
+                     var bandwidthUsedTB = data.bandwidth_used / 1024;
+                     var bandwidthPercent = (bandwidthUsedTB / data.bandwidth) * 100;
+                     
+                     // Update progress bar
+                     var bandwidthBar = document.getElementById('bandwidthPercentBar');
+                     bandwidthBar.style.width = Math.round(bandwidthPercent) + '%';
+                     bandwidthBar.textContent = Math.round(bandwidthPercent) + '%';
+                     
+                     // Update text display
+                     var bandwidthText = document.getElementById('bandwidthPercentVal');
+                     bandwidthText.textContent = bandwidthUsedTB.toFixed(1) + ' / ' + data.bandwidth + ' TB';
+                 }
+             }).always(function() {
+                 // Re-enable button and stop spinning
+                 icon.classList.remove('fa-spin');
+                 button.disabled = false;
+             });
+         }
+         return false;
+     }
 </script>
 
 <div class="arkhost-vps-container">
@@ -1071,7 +1183,12 @@
                     <div class="row mb-2">
                         <div class="col-lg-3 col-sm-6 col-md-6 mb-3">
                             <div class="usage-details px-3 py-4" style="height: 140px; display: flex; flex-direction: column; justify-content: space-between;">
-                                <p class="overview-label">{$_LANG['Overview']['RAM']}</p>
+                                <p class="overview-label">
+                                    {$_LANG['Overview']['RAM']}
+                                    <button onclick="refreshRAMUsage();return false;" class="btn btn-sm btn-outline-secondary ml-2" style="padding: 2px 6px; font-size: 10px; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;" title="Refresh RAM Usage">
+                                        <i class="fa fa-sync-alt" style="font-size: 8px;"></i>
+                                    </button>
+                                </p>
                                 <div class="progress disk-bar">
                                     <div id="ramPercentBar" aria-valuemin="0" aria-valuemax="100" role="progressbar" class="progress-bar" data-placement="right" style="background: #06d79c; width: {if $serverInfo['ram'] > 0}{($serverInfo['ram_usage']/1024/1024/1024/$serverInfo['ram']*100)|round}{else}0{/if}%">
                                         {if $serverInfo['ram'] > 0}{($serverInfo['ram_usage']/1024/1024/1024/$serverInfo['ram']*100)|round}{else}0{/if}%
@@ -1085,7 +1202,12 @@
                         </div>
                         <div class="col-lg-3 col-sm-6 col-md-6 mb-3">
                             <div class="usage-details px-3 py-4" style="height: 140px; display: flex; flex-direction: column; justify-content: space-between;">
-                                <p class="overview-label">{$_LANG['Overview']['Bandwidth']}</p>
+                                <p class="overview-label">
+                                    {$_LANG['Overview']['Bandwidth']}
+                                    <button onclick="refreshBandwidthUsage();return false;" class="btn btn-sm btn-outline-secondary ml-2" style="padding: 2px 6px; font-size: 10px; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;" title="Refresh Bandwidth Usage">
+                                        <i class="fa fa-sync-alt" style="font-size: 8px;"></i>
+                                    </button>
+                                </p>
                                 <div class="progress disk-bar">
                                     <div id="bandwidthPercentBar" aria-valuemin="0" aria-valuemax="100" role="progressbar" class="progress-bar" data-placement="right" style="background: #9c06d7; width: {if $serverInfo['bandwidth'] > 0}{($serverInfo['bandwidth_used']/1024/$serverInfo['bandwidth']*100)|round}{else}0{/if}%">
                                         {if $serverInfo['bandwidth'] > 0}{($serverInfo['bandwidth_used']/1024/$serverInfo['bandwidth']*100)|round}{else}0{/if}%
@@ -1113,14 +1235,19 @@
                         </div>
                         <div class="col-lg-3 col-sm-6 col-md-6 mb-3">
                             <div class="usage-details px-3 py-4" style="height: 140px; display: flex; flex-direction: column; justify-content: space-between;">
-                                <p class="overview-label">{$_LANG['Overview']['CPU']}</p>
+                                <p class="overview-label">
+                                    {$_LANG['Overview']['CPU']}
+                                    <button onclick="refreshCPUUsage();return false;" class="btn btn-sm btn-outline-secondary ml-2" style="padding: 2px 6px; font-size: 10px; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;" title="Refresh CPU Usage">
+                                        <i class="fa fa-sync-alt" style="font-size: 8px;"></i>
+                                    </button>
+                                </p>
                                 <div class="progress disk-bar">
-                                    <div class="progress-bar text-center w-100 d-flex align-items-center justify-content-center" style="background: #e74c3c; font-weight: bold; color: white;">
-                                        <span class="used-cpu" style="font-size: 1.5em;">{if $serverInfo['cpu_usage'] <= 1}{($serverInfo['cpu_usage'] * 100)|round}{else}{$serverInfo['cpu_usage']|ceil}{/if}%</span>
+                                    <div id="cpuPercentBar" aria-valuemin="0" aria-valuemax="100" role="progressbar" class="progress-bar" data-placement="right" style="background: #e74c3c; width: {if $serverInfo['cpu_usage'] <= 1}{($serverInfo['cpu_usage'] * 100)|round}{else}{$serverInfo['cpu_usage']|ceil}{/if}%">
+                                        {if $serverInfo['cpu_usage'] <= 1}{($serverInfo['cpu_usage'] * 100)|round}{else}{$serverInfo['cpu_usage']|ceil}{/if}%
                                     </div>
                                 </div>
                                 <div>
-                                    <span class="used_disk_percent mr-1">{$_LANG['Overview']['CPUUsage']}</span>
+                                    <span id="cpuPercentVal" class="used_disk_percent mr-1">{if $serverInfo['cpu_usage'] <= 1}{($serverInfo['cpu_usage'] * 100)|round}{else}{$serverInfo['cpu_usage']|ceil}{/if}% {$_LANG['Overview']['CPUUsage']}</span>
                                     <span class="overview-label"></span>
                                 </div>
                             </div>
