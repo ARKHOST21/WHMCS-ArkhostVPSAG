@@ -94,4 +94,7 @@ support@arkhost.com
 
 ## License
 
-Proprietary. Copyright © 2025 ArkHost.
+MIT License
+
+Copyright (c) 2025 ArkHost
+
