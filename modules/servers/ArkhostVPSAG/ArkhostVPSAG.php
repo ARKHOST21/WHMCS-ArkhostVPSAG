@@ -835,14 +835,41 @@ function ArkhostVPSAG_ClientArea(array $params) {
             
             // Process operating system info only if we have data
             if (isset($serverInfo['os']) && !empty($operatingSystemsTemp)) {
-                $serverInfo['operatingSystem'] = $serverInfo['os'];
-                $osIndex = array_search($serverInfo['operatingSystem'], array_column($operatingSystemsTemp, 'id'));
+                $osId = $serverInfo['os'];
+                $osIndex = array_search($osId, array_column($operatingSystemsTemp, 'id'));
                 
                 if ($osIndex !== false && isset($operatingSystemsTemp[$osIndex])) {
-                    $serverInfo['operatingSystem'] = $operatingSystemsTemp[$osIndex];
-                    if (isset($serverInfo['operatingSystem']['group']) && isset($operatingSystems[$serverInfo['operatingSystem']['group']])) {
-                        $serverInfo['operatingSystem'] = $operatingSystems[$serverInfo['operatingSystem']['group']];
+                    $currentOS = $operatingSystemsTemp[$osIndex];
+                    $osName = strtolower($currentOS['name']);
+                    
+                    // Determine the proper group based on current OS name
+                    if (strpos($osName, 'almalinux') !== false || strpos($osName, 'alma') !== false) {
+                        $group = 'almalinux';
+                    } elseif (strpos($osName, 'rocky') !== false || strpos($osName, 'rockylinux') !== false) {
+                        $group = 'rocky';
+                    } elseif (strpos($osName, 'centos') !== false) {
+                        $group = 'centos';
+                    } elseif (strpos($osName, 'debian') !== false) {
+                        $group = 'debian';
+                    } elseif (strpos($osName, 'ubuntu') !== false) {
+                        $group = 'ubuntu';
+                    } elseif (strpos($osName, 'windows') !== false) {
+                        $group = 'windows';
+                    } else {
+                        $group = $currentOS['group'];
                     }
+                    
+                    // Use the specific OS information instead of the generic group
+                    $serverInfo['operatingSystem'] = array(
+                        'name' => $currentOS['name'],
+                        'image' => isset($operatingSystems[$group]) ? $operatingSystems[$group]['image'] : 'data:image/png;base64,' . base64_encode(file_get_contents(__DIR__ . '/template/img/os/others.png'))
+                    );
+                } else {
+                    // Fallback if OS not found in list
+                    $serverInfo['operatingSystem'] = array(
+                        'name' => 'OS ID: ' . $osId,
+                        'image' => 'data:image/png;base64,' . base64_encode(file_get_contents(__DIR__ . '/template/img/os/others.png'))
+                    );
                 }
             }
         }
