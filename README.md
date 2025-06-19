@@ -40,4 +40,4 @@ A WHMCS server module for VPS management with multi-language support.
 
 
 MIT License
-© 2024 ArkHost
+© 2025 ArkHost
