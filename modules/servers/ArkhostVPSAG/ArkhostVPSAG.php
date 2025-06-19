@@ -3,8 +3,8 @@
  *	WHMCS Server Module - VPSAG
  *
  *	@package     WHMCS
- *	@version     1.1
- *	@copyright   Copyright (c) ArkHost 2024
+ *	@version     1.2
+ *	@copyright   Copyright (c) ArkHost 2025
  *	@author      ArkHost <support@arkhost.com>
  *  @link        https://arkhost.com
  */

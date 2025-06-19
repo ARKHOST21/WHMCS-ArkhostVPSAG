@@ -1,7 +1,7 @@
 {*
  *	WHMCS Server Module - VPSAG
  *	@package     WHMCS
- *	@copyright   ArkHost 2024
+ *	@copyright   ArkHost 2025
  *	@link        https://arkhost.com
  *	@author      ArkHost <support@arkhost.com>
  *}
