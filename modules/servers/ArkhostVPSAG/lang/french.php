@@ -12,6 +12,20 @@ $_ADDONLANG['Stop'] = 'Arrêter';
 $_ADDONLANG['Restart'] = 'Redémarrer';
 $_ADDONLANG['VNC'] = 'Console VNC';
 
+## Confirmations
+$_ADDONLANG['Confirm']['Stop']['Title'] = 'Arreter le VPS';
+$_ADDONLANG['Confirm']['Stop']['Message'] = 'Voulez-vous arreter ce VPS. Cela va eteindre le serveur.';
+$_ADDONLANG['Confirm']['Restart']['Title'] = 'Redemarrer le VPS';
+$_ADDONLANG['Confirm']['Restart']['Message'] = 'Voulez-vous redemarrer ce VPS. Cela va redemarrer le serveur.';
+$_ADDONLANG['Confirm']['Cancel'] = 'Annuler';
+$_ADDONLANG['Confirm']['Confirm'] = 'Confirmer';
+$_ADDONLANG['Confirm']['CreateBackup']['Title'] = 'Creer une sauvegarde';
+$_ADDONLANG['Confirm']['CreateBackup']['Message'] = 'Voulez-vous creer une sauvegarde. Cela peut prendre plusieurs minutes.';
+$_ADDONLANG['Confirm']['DeleteBackup']['Title'] = 'Supprimer la sauvegarde';
+$_ADDONLANG['Confirm']['DeleteBackup']['Message'] = 'Voulez-vous supprimer cette sauvegarde. Cette action ne peut pas etre annulee.';
+$_ADDONLANG['Confirm']['RestoreBackup']['Title'] = 'Restaurer la sauvegarde';
+$_ADDONLANG['Confirm']['RestoreBackup']['Message'] = 'Voulez-vous restaurer cette sauvegarde. Cela ecrasera toutes les donnees actuelles et ne peut pas etre annule.';
+
 ## Navbar
 $_ADDONLANG['Navbar']['Overview'] = 'Aperçu';
 $_ADDONLANG['Navbar']['Graphs'] = 'Graphiques';

@@ -12,6 +12,20 @@ $_ADDONLANG['Stop'] = 'Stop';
 $_ADDONLANG['Restart'] = 'Herstarten';
 $_ADDONLANG['VNC'] = 'VNC-console';
 
+## Bevestigingen
+$_ADDONLANG['Confirm']['Stop']['Title'] = 'VPS stoppen';
+$_ADDONLANG['Confirm']['Stop']['Message'] = 'Weet u zeker dat u deze VPS wilt stoppen? Dit zal de server afsluiten.';
+$_ADDONLANG['Confirm']['Restart']['Title'] = 'VPS herstarten';
+$_ADDONLANG['Confirm']['Restart']['Message'] = 'Weet u zeker dat u deze VPS wilt herstarten? Dit zal de server opnieuw opstarten.';
+$_ADDONLANG['Confirm']['Cancel'] = 'Annuleren';
+$_ADDONLANG['Confirm']['Confirm'] = 'Bevestigen';
+$_ADDONLANG['Confirm']['CreateBackup']['Title'] = 'Back-up maken';
+$_ADDONLANG['Confirm']['CreateBackup']['Message'] = 'Wilt u een back-up maken. Dit kan enkele minuten duren.';
+$_ADDONLANG['Confirm']['DeleteBackup']['Title'] = 'Back-up verwijderen';
+$_ADDONLANG['Confirm']['DeleteBackup']['Message'] = 'Wilt u deze back-up verwijderen. Deze actie kan niet ongedaan worden gemaakt.';
+$_ADDONLANG['Confirm']['RestoreBackup']['Title'] = 'Back-up herstellen';
+$_ADDONLANG['Confirm']['RestoreBackup']['Message'] = 'Wilt u deze back-up herstellen. Dit overschrijft alle huidige gegevens en kan niet ongedaan worden gemaakt.';
+
 ## Navigatiebalk
 $_ADDONLANG['Navbar']['Overview'] = 'Overzicht';
 $_ADDONLANG['Navbar']['Graphs'] = 'Grafieken';
@@ -45,6 +59,11 @@ $_ADDONLANG['Backups']['Type'] = 'Type';
 $_ADDONLANG['Backups']['Status'] = 'Status';
 $_ADDONLANG['Backups']['Actions'] = 'Acties';
 $_ADDONLANG['Backups']['Create'] = 'Nu Back-up Maken';
+$_ADDONLANG['Backups']['Available'] = 'Beschikbaar';
+$_ADDONLANG['Backups']['Creating'] = 'Bezig met maken...';
+$_ADDONLANG['Backups']['Error'] = 'Fout';
+$_ADDONLANG['Backups']['Automatic'] = 'Automatisch';
+$_ADDONLANG['Backups']['Manual'] = 'Handmatig';
 
 ## Instellingen
 ### Hostnaam

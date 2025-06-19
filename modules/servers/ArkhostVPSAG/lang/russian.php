@@ -12,6 +12,20 @@ $_ADDONLANG['Stop'] = 'Остановка';
 $_ADDONLANG['Restart'] = 'Перезапуск';
 $_ADDONLANG['VNC'] = 'Консоль VNC';
 
+## Подтверждения
+$_ADDONLANG['Confirm']['Stop']['Title'] = 'Остановить VPS';
+$_ADDONLANG['Confirm']['Stop']['Message'] = 'Вы уверены, что хотите остановить этот VPS? Это выключит сервер.';
+$_ADDONLANG['Confirm']['Restart']['Title'] = 'Перезапустить VPS';
+$_ADDONLANG['Confirm']['Restart']['Message'] = 'Вы уверены, что хотите перезапустить этот VPS? Это перезагрузит сервер.';
+$_ADDONLANG['Confirm']['Cancel'] = 'Отмена';
+$_ADDONLANG['Confirm']['Confirm'] = 'Подтвердить';
+$_ADDONLANG['Confirm']['CreateBackup']['Title'] = 'Создать резервную копию';
+$_ADDONLANG['Confirm']['CreateBackup']['Message'] = 'Хотите создать резервную копию. Это может занять несколько минут.';
+$_ADDONLANG['Confirm']['DeleteBackup']['Title'] = 'Удалить резервную копию';
+$_ADDONLANG['Confirm']['DeleteBackup']['Message'] = 'Хотите удалить эту резервную копию. Это действие нельзя отменить.';
+$_ADDONLANG['Confirm']['RestoreBackup']['Title'] = 'Восстановить резервную копию';
+$_ADDONLANG['Confirm']['RestoreBackup']['Message'] = 'Хотите восстановить эту резервную копию. Это перезапишет все текущие данные и не может быть отменено.';
+
 ## Навигационная панель
 $_ADDONLANG['Navbar']['Overview'] = 'Обзор';
 $_ADDONLANG['Navbar']['Graphs'] = 'Графики';

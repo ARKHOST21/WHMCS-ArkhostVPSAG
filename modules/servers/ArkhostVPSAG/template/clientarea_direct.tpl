@@ -1,3 +1,13 @@
+{*
+ *	WHMCS Server Module - VPSAG
+ *	@package     WHMCS
+ *	@copyright   ArkHost 2024
+ *	@link        https://arkhost.com
+ *	@author      ArkHost <support@arkhost.com>
+ *}
+
+
+
 <style>
     .arkhost-vps-container {
         font-family: 'Arial', sans-serif;
@@ -147,7 +157,7 @@
         flex: 1;
         z-index: 2;
         position: relative;
-        margin-top: 12px;
+        margin-top: 6px;
         text-align: center;
     }
     
@@ -175,7 +185,7 @@
         height: 48px;
         margin-right: 0;
         margin-top: 8px;
-        margin-bottom: 12px;
+        margin-bottom: 6px;
         border-radius: 50%;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
@@ -347,6 +357,26 @@
     }
     
     /* OS Selection Enhancements */
+    .arkhost-vps-container .os_badge {
+        margin-bottom: 20px;
+    }
+    
+    .arkhost-vps-container .os_badge .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: .255em;
+        vertical-align: .255em;
+        content: "";
+        border-top: .3em solid;
+        border-right: .3em solid transparent;
+        border-bottom: 0;
+        border-left: .3em solid transparent;
+        margin-bottom: 10px;
+    }
+    
+    .arkhost-vps-container .os_badge .dropdown-toggle:hover::after {
+        border-top-color: #495057;
+    }
+    
     .arkhost-vps-container .os_badge .dropdown-toggle.btn-success {
         border: 2px solid #28a745 !important;
         background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);
@@ -390,8 +420,8 @@
     }
     
     .arkhost-vps-container .os_badge .dropdown-item:hover {
-        background-color: #f8f9fa;
-        color: #495057;
+        background-color: #007bff;
+        color: white !important;
     }
     
     .arkhost-vps-container .os_badge .dropdown-item.active:hover {
@@ -409,6 +439,7 @@
         margin-top: 4px;
         max-height: 300px;
         overflow-y: auto;
+        overflow-x: hidden;
     }
     
     .arkhost-vps-container .os_badge .dropdown-item {
@@ -429,22 +460,317 @@
         0% { opacity: 0; transform: scale(0.5); }
         100% { opacity: 1; transform: scale(1); }
     }
+    
+    /* Custom Notification System */
+    .arkhost-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        min-width: 300px;
+        max-width: 400px;
+        z-index: 9999;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        color: white;
+        font-weight: 500;
+        transform: translateX(450px);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .arkhost-notification.show {
+        transform: translateX(0);
+    }
+    
+    .arkhost-notification.success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+    
+    .arkhost-notification.error {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    }
+    
+    .arkhost-notification.warning {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        color: #212529;
+    }
+    
+    .arkhost-notification.info {
+        background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+    }
+    
+    .arkhost-notification i {
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    
+    .arkhost-notification .close-btn {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+    
+    .arkhost-notification .close-btn:hover {
+        opacity: 1;
+    }
+    
+    /* Custom Confirm Dialog */
+    .arkhost-confirm-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .arkhost-confirm-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .arkhost-confirm-dialog {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transform: scale(0.8);
+        transition: transform 0.3s ease;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .arkhost-confirm-overlay.show .arkhost-confirm-dialog {
+        transform: scale(1);
+    }
+    
+    .arkhost-confirm-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .arkhost-confirm-message {
+        color: #6c757d;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+    
+    .arkhost-confirm-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+    
+    .arkhost-confirm-btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    }
+    
+    .arkhost-confirm-btn.cancel {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .arkhost-confirm-btn.cancel:hover {
+        background: #5a6268;
+    }
+    
+    .arkhost-confirm-btn.confirm {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .arkhost-confirm-btn.confirm:hover {
+        background: #c82333;
+    }
 </style>
 
 <script type="text/javascript">
     var productURL = '{$WEB_ROOT}/clientarea.php?action=productdetails&id={$serviceid}';
     var serverInfoInitial = JSON.parse('{$serverInfo|@json_encode}');
     var lang = {
-        moduleactionfailed: '{$LANG.moduleactionfailed}!',
-        moduleactionsuccess: '{$LANG.moduleactionsuccess}',
+        moduleactionfailed: 'Action failed!',
+        moduleactionsuccess: 'Action completed successfully',
         backups: {
-            available: '{$_LANG['Backups']['Available']}',
-            creating: '{$_LANG['Backups']['Creating']}',
-            error: '{$_LANG['Backups']['Error']}',
-            automatic: '{$_LANG['Backups']['Automatic']}',
-            manual: '{$_LANG['Backups']['Manual']}'
+            available: 'Available',
+            creating: 'Creating...',
+            error: 'Error',
+            automatic: 'Automatic',
+            manual: 'Manual'
+        },
+        confirm: {
+            stop: {
+                title: "{$_LANG['Confirm']['Stop']['Title']|escape:'javascript'|default:'Stop VPS'}",
+                message: "{$_LANG['Confirm']['Stop']['Message']|escape:'javascript'|default:'Do you want to stop this VPS. This will shutdown the server.'}"
+            },
+            restart: {
+                title: "{$_LANG['Confirm']['Restart']['Title']|escape:'javascript'|default:'Restart VPS'}",
+                message: "{$_LANG['Confirm']['Restart']['Message']|escape:'javascript'|default:'Do you want to restart this VPS. This will reboot the server.'}"
+            },
+            createBackup: {
+                title: "{$_LANG['Confirm']['CreateBackup']['Title']|escape:'javascript'|default:'Create Backup'}",
+                message: "{$_LANG['Confirm']['CreateBackup']['Message']|escape:'javascript'|default:'Do you want to create a backup. This may take several minutes.'}"
+            },
+            deleteBackup: {
+                title: "{$_LANG['Confirm']['DeleteBackup']['Title']|escape:'javascript'|default:'Delete Backup'}",
+                message: "{$_LANG['Confirm']['DeleteBackup']['Message']|escape:'javascript'|default:'Do you want to delete this backup. This action cannot be undone.'}"
+            },
+            restoreBackup: {
+                title: "{$_LANG['Confirm']['RestoreBackup']['Title']|escape:'javascript'|default:'Restore Backup'}",
+                message: "{$_LANG['Confirm']['RestoreBackup']['Message']|escape:'javascript'|default:'Do you want to restore this backup. This will overwrite all current data and cannot be undone.'}"
+            }
         }
     };
+    
+    // VPS control functions
+    console.log('Defining VPS control functions...');
+    
+    function confirmStop() {
+        console.log('confirmStop called');
+        showConfirm(lang.confirm.stop.message, lang.confirm.stop.title, function() {
+            ArkHostVPS_API('Stop', true);
+        });
+        return false;
+    }
+    
+    function confirmRestart() {
+        console.log('confirmRestart called');
+        showConfirm(lang.confirm.restart.message, lang.confirm.restart.title, function() {
+            ArkHostVPS_API('Reboot', true);
+        });
+        return false;
+    }
+    
+    console.log('VPS control functions defined!', typeof confirmRestart);
+    
+    // Custom notification functions
+    function showNotification(message, type, duration) {
+        type = type || 'success';
+        duration = duration || 4000;
+        
+        // Remove existing notifications
+        var existing = document.querySelectorAll('.arkhost-notification');
+        for (var i = 0; i < existing.length; i++) {
+            existing[i].remove();
+        }
+        
+        // Create notification element
+        var notification = document.createElement('div');
+        notification.className = 'arkhost-notification ' + type;
+        
+        // Set icon based on type
+        var icon = 'fa-check-circle';
+        if (type === 'error') icon = 'fa-exclamation-circle';
+        else if (type === 'warning') icon = 'fa-exclamation-triangle';
+        else if (type === 'info') icon = 'fa-info-circle';
+        
+        notification.innerHTML = '<i class="fa ' + icon + '"></i><span>' + message + '</span><button class="close-btn" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>';
+        
+        // Add to document
+        document.body.appendChild(notification);
+        
+        // Trigger animation
+        setTimeout(function() {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Auto remove
+        setTimeout(function() {
+            notification.classList.remove('show');
+            setTimeout(function() {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }, duration);
+    }
+    
+    function showConfirm(message, title, onConfirm) {
+        title = title || 'Confirm Action';
+        
+        // Remove existing confirms
+        var existing = document.querySelectorAll('.arkhost-confirm-overlay');
+        for (var i = 0; i < existing.length; i++) {
+            existing[i].remove();
+        }
+        
+        // Create confirm dialog
+        var overlay = document.createElement('div');
+        overlay.className = 'arkhost-confirm-overlay';
+        
+        overlay.innerHTML = '<div class="arkhost-confirm-dialog"><div class="arkhost-confirm-title"><i class="fa fa-exclamation-triangle" style="color: #ffc107;"></i>' + title + '</div><div class="arkhost-confirm-message">' + message + '</div><div class="arkhost-confirm-buttons"><button class="arkhost-confirm-btn cancel">{$_LANG['Confirm']['Cancel']|escape:'javascript'|default:'Cancel'}</button><button class="arkhost-confirm-btn confirm">{$_LANG['Confirm']['Confirm']|escape:'javascript'|default:'Confirm'}</button></div></div>';
+        
+        // Add event listeners
+        var cancelBtn = overlay.querySelector('.cancel');
+        var confirmBtn = overlay.querySelector('.confirm');
+        
+        cancelBtn.onclick = function() {
+            overlay.classList.remove('show');
+            setTimeout(function() {
+                if (overlay.parentElement) {
+                    overlay.remove();
+                }
+            }, 300);
+        };
+        
+        confirmBtn.onclick = function() {
+            overlay.classList.remove('show');
+            setTimeout(function() {
+                if (overlay.parentElement) {
+                    overlay.remove();
+                }
+            }, 300);
+            if (onConfirm) {
+                onConfirm();
+            }
+        };
+        
+        // Close on backdrop click
+        overlay.onclick = function(e) {
+            if (e.target === overlay) {
+                overlay.classList.remove('show');
+                setTimeout(function() {
+                    if (overlay.parentElement) {
+                        overlay.remove();
+                    }
+                }, 300);
+            }
+        };
+        
+        // Add to document and show
+        document.body.appendChild(overlay);
+        setTimeout(function() {
+            overlay.classList.add('show');
+        }, 100);
+    }
     
     // Helper functions for API calls via WHMCS (use existing jQuery)
     function ArkHostVPS_API(action, showAlert, params) {
@@ -478,7 +804,7 @@
                                    (data && Object.keys(data).some(key => !isNaN(key))); // Has numeric keys
                     
                     if (isSuccess) {
-                        if (showAlert) alert(lang.moduleactionsuccess);
+                        if (showAlert) showNotification(lang.moduleactionsuccess, 'success');
                         // Handle specific responses
                         if (action === 'List backups') {
                             updateBackupTable(data);
@@ -523,7 +849,7 @@
                             setTimeout(function() { location.reload(); }, 2000);
                         }
                     } else {
-                        if (showAlert) alert(lang.moduleactionfailed + ': ' + (data.message || 'Unknown error'));
+                        if (showAlert) showNotification(lang.moduleactionfailed + ': ' + (data.message || 'Unknown error'), 'error');
                         // Hide loading for graphs
                         if (action === 'Graphs') {
                             document.getElementById('graphs-loading').style.display = 'none';
@@ -532,7 +858,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    if (showAlert) alert(lang.moduleactionfailed + ': Network error');
+                    if (showAlert) showNotification(lang.moduleactionfailed + ': Network error', 'error');
                     // Hide loading for graphs
                     if (action === 'Graphs') {
                         document.getElementById('graphs-loading').style.display = 'none';
@@ -616,23 +942,35 @@
     }
     
     function createBackup() {
-        if (confirm('Are you sure you want to create a backup? This may take several minutes.')) {
-            ArkHostVPS_API('Create backup', true);
-        }
+        showConfirm(
+            lang.confirm.createBackup.message,
+            lang.confirm.createBackup.title,
+            function() {
+                ArkHostVPS_API('Create backup', true);
+            }
+        );
         return false;
     }
     
     function deleteBackup(filename) {
-        if (confirm('Are you sure you want to delete this backup? This action cannot be undone.')) {
-            ArkHostVPS_API('Delete backup', true, { file: filename });
-        }
+        showConfirm(
+            lang.confirm.deleteBackup.message,
+            lang.confirm.deleteBackup.title,
+            function() {
+                ArkHostVPS_API('Delete backup', true, { file: filename });
+            }
+        );
         return false;
     }
     
     function restoreBackup(filename) {
-        if (confirm('Are you sure you want to restore this backup? This will overwrite all current data and cannot be undone.')) {
-            ArkHostVPS_API('Restore backup', true, { file: filename });
-        }
+        showConfirm(
+            lang.confirm.restoreBackup.message,
+            lang.confirm.restoreBackup.title,
+            function() {
+                ArkHostVPS_API('Restore backup', true, { file: filename });
+            }
+        );
         return false;
     }
     
@@ -649,9 +987,34 @@
             }
         }
         
+        // Handle the API response format
+        var rulesList = [];
+        
+        // Handle different response formats
+        if (Array.isArray(data)) {
+            // Direct array response
+            rulesList = data;
+        } else if (data && typeof data === 'object') {
+            // Check if there are numeric keys (0, 1, 2, etc.) indicating rule array
+            var keys = Object.keys(data);
+            var numericKeys = keys.filter(function(key) { return !isNaN(key); });
+            if (numericKeys.length > 0) {
+                rulesList = numericKeys.map(function(key) { return data[key]; });
+            } else if (data.rules && Array.isArray(data.rules)) {
+                // Rules might be in a 'rules' property
+                rulesList = data.rules;
+            } else if (data.result === 'success') {
+                // WHMCS wrapper with result='success' - look for numeric keys excluding 'result'
+                var filteredKeys = keys.filter(function(key) { return !isNaN(key) && key !== 'result'; });
+                if (filteredKeys.length > 0) {
+                    rulesList = filteredKeys.map(function(key) { return data[key]; });
+                }
+            }
+        }
+        
         // Add firewall rules if any exist
-        if (data && Array.isArray(data)) {
-            data.forEach(function(rule) {
+        if (rulesList.length > 0) {
+            rulesList.forEach(function(rule) {
                 if (rule && rule.id) {
                     var row = document.createElement('tr');
                     row.innerHTML = 
@@ -661,9 +1024,9 @@
                         '<td>' + (rule.source || 'N/A') + '</td>' +
                         '<td>' + (rule.note || 'N/A') + '</td>' +
                         '<td>' +
-                                                         '<a href="#" onclick="ArkHostVPS_API(\'Delete Firewall rule\', true, { rule_id: \'' + rule.id + '\' }); return false;" title="Delete">' +
-                                 '<i class="fa fa-trash text-danger"></i>' +
-                             '</a>' +
+                            '<a href="#" onclick="ArkHostVPS_API(\'Delete Firewall rule\', true, { rule_id: \'' + rule.id + '\' }); return false;" title="Delete">' +
+                                '<i class="fa fa-trash text-danger"></i>' +
+                            '</a>' +
                         '</td>';
                     tableBody.insertBefore(row, tableBody.lastElementChild);
                 }
@@ -910,6 +1273,32 @@
                     document.getElementById('disableSSHPassword').checked = false;
                 } else {
                     advancedOptions.style.display = 'block';
+                    
+                    // Update post-installation script placeholder based on OS type
+                    var scriptTextarea = document.getElementById('reinstallScript');
+                    if (scriptTextarea) {
+                        var osName = jQuery(element).text().toLowerCase();
+                        var groupName = group.toLowerCase();
+                        
+                        // Determine if it's Debian/Ubuntu based or RHEL/CentOS based
+                        if (groupName.includes('debian') || groupName.includes('ubuntu') || 
+                            osName.includes('debian') || osName.includes('ubuntu')) {
+                            // Debian/Ubuntu based - use apt
+                            scriptTextarea.placeholder = '#!/bin/bash\n# Example: Install and configure nginx\napt update && apt install -y nginx\nsystemctl enable nginx';
+                        } else if (groupName.includes('centos') || groupName.includes('rhel') || 
+                                   groupName.includes('rocky') || groupName.includes('alma') ||
+                                   osName.includes('centos') || osName.includes('rhel') || 
+                                   osName.includes('rocky') || osName.includes('alma')) {
+                            // RHEL based - use yum/dnf
+                            scriptTextarea.placeholder = '#!/bin/bash\n# Example: Install and configure nginx\nyum update -y && yum install -y nginx\nsystemctl enable nginx';
+                        } else if (groupName.includes('fedora') || osName.includes('fedora')) {
+                            // Fedora - use dnf
+                            scriptTextarea.placeholder = '#!/bin/bash\n# Example: Install and configure nginx\ndnf update -y && dnf install -y nginx\nsystemctl enable nginx';
+                        } else {
+                            // Generic example
+                            scriptTextarea.placeholder = '#!/bin/bash\n# Example: Install packages based on your distribution\n# For Debian/Ubuntu: apt update && apt install -y package\n# For RHEL/CentOS: yum update -y && yum install -y package';
+                        }
+                    }
                 }
             }
         }
@@ -934,7 +1323,7 @@
     function reinstallWithAdvancedOptions() {
         var osId = document.getElementById('newOS').value;
         if (!osId || osId === '0') {
-            alert('Please select an operating system first.');
+            showNotification('Please select an operating system first.', 'warning');
             return false;
         }
         
@@ -1108,7 +1497,7 @@
                     <div class="row w-100">
                         <div class="col-4 text-center">
                             <a href="#" 
-                               onclick="return ArkHostVPS_API('{if $serverInfo['status'] !== 'running'}Start{else}Stop{/if}');" 
+                               onclick="{if $serverInfo['status'] !== 'running'}return ArkHostVPS_API('Start');{else}return confirmStop();{/if}" 
                                class="vps-control-btn {if $serverInfo['status'] !== 'running'}start-btn{else}stop-btn{/if}"
                                title="{if $serverInfo['status'] !== 'running'}{$_LANG['Start']}{else}{$_LANG['Stop']}{/if}">
                                 <i class="fa fa-{if $serverInfo['status'] !== 'running'}play{else}stop{/if}" aria-hidden="true"></i>
@@ -1117,7 +1506,7 @@
                         </div>
                         <div class="col-4 text-center">
                             <a href="#" 
-                               onclick="return ArkHostVPS_API('Reboot');" 
+                               onclick="return confirmRestart();" 
                                class="vps-control-btn restart-btn"
                                title="{$_LANG['Restart']}">
                                 <i class="fa fa-sync" aria-hidden="true"></i>

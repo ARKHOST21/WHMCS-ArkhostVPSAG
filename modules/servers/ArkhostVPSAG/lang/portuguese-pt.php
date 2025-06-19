@@ -12,6 +12,20 @@ $_ADDONLANG['Stop'] = 'Parar';
 $_ADDONLANG['Restart'] = 'Reiniciar';
 $_ADDONLANG['VNC'] = 'Consola VNC';
 
+## Confirmações
+$_ADDONLANG['Confirm']['Stop']['Title'] = 'Parar VPS';
+$_ADDONLANG['Confirm']['Stop']['Message'] = 'Tem certeza de que deseja parar este VPS? Isso desligará o servidor.';
+$_ADDONLANG['Confirm']['Restart']['Title'] = 'Reiniciar VPS';
+$_ADDONLANG['Confirm']['Restart']['Message'] = 'Tem certeza de que deseja reiniciar este VPS? Isso reiniciará o servidor.';
+$_ADDONLANG['Confirm']['Cancel'] = 'Cancelar';
+$_ADDONLANG['Confirm']['Confirm'] = 'Confirmar';
+$_ADDONLANG['Confirm']['CreateBackup']['Title'] = 'Criar cópia de segurança';
+$_ADDONLANG['Confirm']['CreateBackup']['Message'] = 'Deseja criar uma cópia de segurança. Isto pode demorar vários minutos.';
+$_ADDONLANG['Confirm']['DeleteBackup']['Title'] = 'Eliminar cópia de segurança';
+$_ADDONLANG['Confirm']['DeleteBackup']['Message'] = 'Deseja eliminar esta cópia de segurança. Esta ação não pode ser desfeita.';
+$_ADDONLANG['Confirm']['RestoreBackup']['Title'] = 'Restaurar cópia de segurança';
+$_ADDONLANG['Confirm']['RestoreBackup']['Message'] = 'Deseja restaurar esta cópia de segurança. Isto substituirá todos os dados atuais e não pode ser desfeito.';
+
 ## Navbar
 $_ADDONLANG['Navbar']['Overview'] = 'Visão geral';
 $_ADDONLANG['Navbar']['Graphs'] = 'Gráficos';

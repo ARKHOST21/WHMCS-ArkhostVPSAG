@@ -12,6 +12,20 @@ $_ADDONLANG['Stop'] = 'Ferma';
 $_ADDONLANG['Restart'] = 'Riavvia';
 $_ADDONLANG['VNC'] = 'Console VNC';
 
+## Conferme
+$_ADDONLANG['Confirm']['Stop']['Title'] = 'Ferma VPS';
+$_ADDONLANG['Confirm']['Stop']['Message'] = 'Sei sicuro di voler fermare questo VPS? Questo spegnerà il server.';
+$_ADDONLANG['Confirm']['Restart']['Title'] = 'Riavvia VPS';
+$_ADDONLANG['Confirm']['Restart']['Message'] = 'Sei sicuro di voler riavviare questo VPS? Questo riavvierà il server.';
+$_ADDONLANG['Confirm']['Cancel'] = 'Annulla';
+$_ADDONLANG['Confirm']['Confirm'] = 'Conferma';
+$_ADDONLANG['Confirm']['CreateBackup']['Title'] = 'Crea backup';
+$_ADDONLANG['Confirm']['CreateBackup']['Message'] = 'Vuoi creare un backup. Questo potrebbe richiedere diversi minuti.';
+$_ADDONLANG['Confirm']['DeleteBackup']['Title'] = 'Elimina backup';
+$_ADDONLANG['Confirm']['DeleteBackup']['Message'] = 'Vuoi eliminare questo backup. Questa azione non può essere annullata.';
+$_ADDONLANG['Confirm']['RestoreBackup']['Title'] = 'Ripristina backup';
+$_ADDONLANG['Confirm']['RestoreBackup']['Message'] = 'Vuoi ripristinare questo backup. Questo sovrascriverà tutti i dati attuali e non può essere annullato.';
+
 ## Navbar
 $_ADDONLANG['Navbar']['Overview'] = 'Panoramica';
 $_ADDONLANG['Navbar']['Graphs'] = 'Grafici';
