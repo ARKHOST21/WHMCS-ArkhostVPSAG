@@ -18,6 +18,16 @@ A WHMCS server module for VPS management with multi-language support.
 - WHMCS 8.9+
 - PHP 7.4+
 
+## Screenshots
+
+### Main Interface
+![Main Dashboard](screenshots/vpsag1.png)
+
+### Analytics Dashboard
+![Settings](screenshots/vpsag2.png)
+
+### Configuration Panel
+![Analytics](screenshots/vpsag3.png)
 
 ## Changelog
 
