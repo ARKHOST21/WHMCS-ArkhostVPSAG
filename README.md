@@ -17,6 +17,7 @@ A WHMCS server module for VPS management with multi-language support.
 
 - WHMCS 8.9+
 - PHP 7.4+
+- VPSag API access
 
 ## Screenshots
 
