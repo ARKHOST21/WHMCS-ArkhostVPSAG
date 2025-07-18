@@ -8,5 +8,6 @@
  *  @link        https://arkhost.com
  */
 
-header('Location: https://arkhost.com');
+http_response_code(403);
+exit('Access denied');
 ?>

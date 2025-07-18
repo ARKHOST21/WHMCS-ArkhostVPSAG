@@ -9,7 +9,8 @@
  */
 
 if (empty($_POST)) {
-    exit(header('Location: https://arkhost.com'));
+    http_response_code(400);
+    exit('Bad Request');
 }
 
 require_once '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'init.php';
@@ -19,10 +20,29 @@ use WHMCS\Database\Capsule;
 
 $_POST = array_map('html_entity_decode', $_POST);
 
-$customField = Capsule::table('tblcustomfieldsvalues')->where('value', 'VPSAG-' . $_POST['server_id'])->first();
-$service = WHMCS\Service\Service::find($customField->relid);
+// Look for the service by VPSAG ID in service properties
+$serviceProperty = Capsule::table('tblservice_properties')
+    ->where('property', 'vpsag|VPSAG ID')
+    ->where('value', 'VPSAG-' . $_POST['server_id'])
+    ->first();
 
-if (!$service) exit(header('Location: https://arkhost.com'));
+if (!$serviceProperty) {
+    // Fallback: try to find in custom fields for backward compatibility
+    $customField = Capsule::table('tblcustomfieldsvalues')->where('value', 'VPSAG-' . $_POST['server_id'])->first();
+    if ($customField) {
+        $service = WHMCS\Service\Service::find($customField->relid);
+    } else {
+        http_response_code(404);
+        exit('Service not found');
+    }
+} else {
+    $service = WHMCS\Service\Service::find($serviceProperty->service_id);
+}
+
+if (!$service) {
+    http_response_code(404);
+    exit('Service not found');
+}
 
 $server = Capsule::table('tblservers')->where('id', $service->server)->first();
 
@@ -37,7 +57,10 @@ foreach ($_POST as $key => $value) {
 $rawSig .= hash('sha512', decrypt($server->password));
 $signature = hash('sha256', $rawSig);
 
-if ($_POST['sig'] != $signature) exit(header('Location: https://arkhost.com'));
+if ($_POST['sig'] != $signature) {
+    http_response_code(403);
+    exit('Invalid signature');
+}
 
 $params = array(
     'serverusername' => $server->username,

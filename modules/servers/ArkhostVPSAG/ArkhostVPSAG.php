@@ -3,14 +3,15 @@
  *	WHMCS Server Module - VPSAG
  *
  *	@package     WHMCS
- *	@version     1.2
+ *	@version     1.3
  *	@copyright   Copyright (c) ArkHost 2025
  *	@author      ArkHost <support@arkhost.com>
  *  @link        https://arkhost.com
  */
 
 if (!defined('WHMCS')) {
-    exit(header('Location: https://arkhost.com'));
+    http_response_code(403);
+    exit('Access denied');
 }
 
 use WHMCS\Config\Setting;
@@ -54,7 +55,8 @@ function ArkhostVPSAG_API(array $params) {
             break;
            
         case 'Order':
-            $url .= 'order/plan';
+            $planId = ArkhostVPSAG_GetOption($params, 'planid');
+            $url .= 'order/' . $planId;
             $method .= 'POST';
             
             $billingCycles = array(
@@ -67,9 +69,9 @@ function ArkhostVPSAG_API(array $params) {
             );
 
             $data += array(
-                'plan_id' => ArkhostVPSAG_GetOption($params, 'planid'),
+                'hostname' => $params['domain'] ?? 'vps.example.com',
                 'notify_url' => Setting::getValue('SystemURL') . '/modules/servers/ArkhostVPSAG/callback.php',
-                'os_id' => ArkhostVPSAG_GetOption($params, 'osid'),
+                'os' => ArkhostVPSAG_GetOption($params, 'osid'),
                 'billing_term' => $billingCycles[$params['model']['billingcycle']] ?? 1,
             );
             break;
@@ -483,6 +485,22 @@ function ArkhostVPSAG_CreateAccount(array $params) {
         $params['action'] = 'Order';
         $create = ArkhostVPSAG_API($params);
 
+        // Validate API response - the API function already handles status=0 errors
+        // but we need to ensure we have a valid vps_id
+        if (!is_array($create) || !isset($create['vps_id']) || empty($create['vps_id'])) {
+            if (is_array($create)) {
+                logActivity('VPSAG Order Failed - Invalid Response: ' . json_encode($create));
+            } else {
+                logActivity('VPSAG Order Failed - Non-array response: ' . gettype($create));
+            }
+            throw new Exception('Invalid response from API');
+        }
+
+        // Ensure vps_id is numeric and valid
+        if (!is_numeric($create['vps_id']) || $create['vps_id'] <= 0) {
+            throw new Exception('Invalid response from API');
+        }
+
         $params['model']->serviceProperties->save([
             'vpsag|VPSAG ID' => 'VPSAG-' . $create['vps_id'],
         ]);
@@ -741,13 +759,13 @@ function ArkhostVPSAG_ClientArea(array $params) {
         // Check if VPS ID is available
         $vpsId = $params['model']->serviceProperties->get('vpsag');
         if (empty($vpsId)) {
-            throw new Exception('VPS ID not found in service properties. This service may not be properly provisioned yet.');
+            throw new Exception('Service not properly provisioned');
         }
         
         // Get clean VPS ID
         $cleanVpsId = ArkhostVPSAG_GetVPSID($params);
         if (empty($cleanVpsId)) {
-            throw new Exception('Invalid VPS ID format: ' . $vpsId . '. Expected format: VPS-xxxxx or VPSAG-xxxxx');
+            throw new Exception('Invalid VPS ID format');
         }
 
         // Get server info and operating systems data
@@ -756,7 +774,7 @@ function ArkhostVPSAG_ClientArea(array $params) {
 
         // Check if server info is valid
         if (!is_array($serverInfo) || empty($serverInfo)) {
-            throw new Exception('Unable to retrieve server information from API. VPS ID: ' . $vpsId);
+            throw new Exception('Unable to retrieve server information from API');
         }
 
         $params['action'] = 'Operating Systems - Server';
