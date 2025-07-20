@@ -1,5 +1,5 @@
 {**
- *	VPSAG WHMCS Server Provisioning version 1.1
+ *	VPSAG WHMCS Server Provisioning Module
  *
  *	@package     WHMCS
  *	@copyright   ArkHost
