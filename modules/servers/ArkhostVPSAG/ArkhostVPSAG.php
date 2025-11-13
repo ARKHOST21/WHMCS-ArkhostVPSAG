@@ -69,7 +69,7 @@ function ArkhostVPSAG_API(array $params) {
             );
 
             $data += array(
-                'hostname' => $params['domain'] ?? 'vps.example.com',
+                // 'hostname' => removed - let VPSAG generate the hostname automatically
                 'notify_url' => Setting::getValue('SystemURL') . '/modules/servers/ArkhostVPSAG/callback.php',
                 'os' => ArkhostVPSAG_GetOption($params, 'osid'),
                 'billing_term' => $billingCycles[$params['model']['billingcycle']] ?? 1,
@@ -323,6 +323,76 @@ function ArkhostVPSAG_Error($func, $params, Exception $err) {
 }
 
 function ArkhostVPSAG_MetaData() {
+    // Register sidebar hook here to ensure it's always loaded
+    static $hookRegistered = false;
+    if (!$hookRegistered) {
+        $hookRegistered = true;
+        add_hook('ClientAreaPrimarySidebar', 100, function(\WHMCS\View\Menu\Item $primarySidebar) {
+            $serviceId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+            if (!$serviceId) return;
+
+            try {
+                $service = Capsule::table('tblhosting')
+                    ->join('tblproducts', 'tblhosting.packageid', '=', 'tblproducts.id')
+                    ->where('tblhosting.id', $serviceId)
+                    ->select('tblhosting.*', 'tblproducts.servertype')
+                    ->first();
+
+                if (!$service || $service->servertype !== 'ArkhostVPSAG' || $service->domainstatus !== 'Active') {
+                    return;
+                }
+            } catch (Exception $e) {
+                return;
+            }
+
+            $actionsPanel = $primarySidebar->getChild('Service Details Actions');
+            if (!$actionsPanel) return;
+
+            // Load language strings
+            if (!function_exists('ArkhostVPSAG_Translation')) {
+                require_once __DIR__ . '/ArkhostVPSAG.php';
+            }
+            $_LANG = ArkhostVPSAG_Translation();
+
+            // Remove only OUR custom action buttons (created by ClientAreaCustomButtonArray with cog icons)
+            // They have modop=custom in the URI
+            $existingChildren = $actionsPanel->getChildren();
+            foreach ($existingChildren as $childName => $child) {
+                $uri = $child->getUri();
+                if ($uri && strpos($uri, 'modop=custom') !== false) {
+                    $actionsPanel->removeChild($childName);
+                }
+            }
+
+            // Add custom action buttons with proper icons
+            $actionsPanel->addChild('VPSStart', [
+                'label' => $_LANG['Start'],
+                'uri' => 'clientarea.php?action=productdetails&id=' . $serviceId . '&modop=custom&a=Start',
+                'order' => 10,
+                'icon' => 'fa-play'
+            ]);
+            $actionsPanel->addChild('VPSStop', [
+                'label' => $_LANG['Stop'],
+                'uri' => 'clientarea.php?action=productdetails&id=' . $serviceId . '&modop=custom&a=Stop',
+                'order' => 20,
+                'icon' => 'fa-stop'
+            ]);
+            $actionsPanel->addChild('VPSRestart', [
+                'label' => $_LANG['Restart'],
+                'uri' => 'clientarea.php?action=productdetails&id=' . $serviceId . '&modop=custom&a=Reboot',
+                'order' => 30,
+                'icon' => 'fa-sync'
+            ]);
+            $actionsPanel->addChild('VPSVNC', [
+                'label' => $_LANG['VNC'],
+                'uri' => 'clientarea.php?action=productdetails&id=' . $serviceId . '&modop=custom&a=VNC',
+                'order' => 40,
+                'icon' => 'fa-desktop',
+                'attributes' => ['target' => '_blank']
+            ]);
+        });
+    }
+
     return array(
         'DisplayName' => 'ArkHost - VPSAG',
         'APIVersion' => '1.1',
@@ -514,7 +584,7 @@ function ArkhostVPSAG_CreateAccount(array $params) {
 
 function ArkhostVPSAG_SuspendAccount(array $params) {
     try {
-        $params['action'] = 'Disable';
+        $params['action'] = 'Stop';
         ArkhostVPSAG_API($params);
     } catch (Exception $err) {
         ArkhostVPSAG_Error(__FUNCTION__, $params, $err);
@@ -526,7 +596,7 @@ function ArkhostVPSAG_SuspendAccount(array $params) {
 
 function ArkhostVPSAG_UnsuspendAccount(array $params) {
     try {
-        $params['action'] = 'Enable';
+        $params['action'] = 'Start';
         ArkhostVPSAG_API($params);
     } catch (Exception $err) {
         ArkhostVPSAG_Error(__FUNCTION__, $params, $err);
@@ -737,6 +807,8 @@ function ArkhostVPSAG_DeliverFile(array $params) {
 
 
 
+// This function is required for WHMCS to handle the custom actions
+// The hook in MetaData() replaces the sidebar buttons to remove cog icons
 function ArkhostVPSAG_ClientAreaCustomButtonArray() {
     $_LANG = ArkhostVPSAG_Translation();
 
@@ -775,6 +847,13 @@ function ArkhostVPSAG_ClientArea(array $params) {
         // Check if server info is valid
         if (!is_array($serverInfo) || empty($serverInfo)) {
             throw new Exception('Unable to retrieve server information from API');
+        }
+
+        // Sync the domain field with VPS hostname so it shows in WHMCS product details
+        if (isset($serverInfo['hostname']) && !empty($serverInfo['hostname'])) {
+            Capsule::table('tblhosting')
+                ->where('id', $params['serviceid'])
+                ->update(['domain' => $serverInfo['hostname']]);
         }
 
         $params['action'] = 'Operating Systems - Server';

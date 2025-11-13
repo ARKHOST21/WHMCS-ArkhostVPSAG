@@ -6,19 +6,37 @@
  *	@author      ArkHost <support@arkhost.com>
  *}
 
-
-
 <style>
-    /* Hide WHMCS default product details (Domain, Username, Server Name, IP, Visit Website) */
-    #domain > .row {
-        display: none !important;
+    /* Hide WHMCS default product details except Domain (keep Domain visible to show VPS hostname) */
+    /* Hide Username, Server Name, IP Address rows using nth-child selectors */
+    #domain > .row:nth-child(2) {
+        display: none !important; /* Username */
+    }
+    #domain > .row:nth-child(3) {
+        display: none !important; /* Server Name */
+    }
+    #domain > .row:nth-child(4) {
+        display: none !important; /* IP Address */
     }
     #domain > br {
         display: none !important;
     }
     #domain > p {
-        display: none !important;
+        display: none !important; /* Visit Website button */
     }
+
+    /* Hide original Domain label - will be replaced with Hostname via JavaScript */
+    #domain > .row:nth-child(1) .col-sm-5 strong {
+        visibility: hidden;
+        position: relative;
+    }
+    #domain > .row:nth-child(1) .col-sm-5 strong::after {
+        visibility: visible;
+        position: absolute;
+        left: 0;
+        content: attr(data-hostname-label);
+    }
+
 
     .arkhost-vps-container {
         font-family: 'Arial', sans-serif;
@@ -2105,5 +2123,43 @@
 // Wait for WHMCS jQuery to be ready and use it
 jQuery(document).ready(function($) {
     // WHMCS already loads Bootstrap and Font Awesome - no need to load additional libraries
+
+    // Replace "Domain" label with translated "Hostname" label
+    var hostnameLabel = '{$_LANG.Overview.Hostname|escape:"javascript"}';
+    $('#domain > .row:nth-child(1) .col-sm-5 strong').attr('data-hostname-label', hostnameLabel);
+
+    // Intercept sidebar VPS action button clicks to show confirmation popups
+    // Use capture phase to intercept before other handlers
+    $('.list-group-item').each(function() {
+        var $link = $(this);
+        var href = $link.attr('href');
+
+        if (!href) return;
+
+        // Remove any existing click handlers and add our own
+        if (href.indexOf('modop=custom&a=Start') !== -1) {
+            $link.off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                ArkHostVPS_API('Start');
+                return false;
+            });
+        } else if (href.indexOf('modop=custom&a=Stop') !== -1) {
+            $link.off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                confirmStop();
+                return false;
+            });
+        } else if (href.indexOf('modop=custom&a=Reboot') !== -1) {
+            $link.off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                confirmRestart();
+                return false;
+            });
+        }
+    });
+
 });
 </script> 
