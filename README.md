@@ -36,7 +36,6 @@ A WHMCS server module for VPS management with multi-language support.
 - Enhanced UI styling with gradient backgrounds and smooth animations
 - Improved responsive design and layout consistency
 - Removed duplicate VPS Information section
-- Optimized resource display (removed redundant disk space usage)
 
 ### Version 1.3
 - Enhanced API integration
