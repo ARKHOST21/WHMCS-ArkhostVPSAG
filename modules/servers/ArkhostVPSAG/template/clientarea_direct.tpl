@@ -9,6 +9,17 @@
 
 
 <style>
+    /* Hide WHMCS default product details (Domain, Username, Server Name, IP, Visit Website) */
+    #domain > .row {
+        display: none !important;
+    }
+    #domain > br {
+        display: none !important;
+    }
+    #domain > p {
+        display: none !important;
+    }
+
     .arkhost-vps-container {
         font-family: 'Arial', sans-serif;
         margin: 15px 0;
