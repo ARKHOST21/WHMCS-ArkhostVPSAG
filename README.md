@@ -77,6 +77,11 @@ A WHMCS server module for VPS management with multi-language support.
 ### Version 1.0
 - Initial release
 
+## Credits
 
+Originally based on work by [andretunes](https://github.com/andretunes/whmcs-module-vpsag)  
+Substantially rewritten and extended by ArkHost
+
+## License
 MIT License
 © 2025 ArkHost
