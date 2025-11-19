@@ -2,6 +2,8 @@
 
 A WHMCS server module for VPS management with multi-language support.
 
+**Note:** Originally based on [andretunes/whmcs-module-vpsag](https://github.com/andretunes/whmcs-module-vpsag). Current version has been substantially rewritten.
+
 ## Features
 
 - VPS control (start/stop/restart)
